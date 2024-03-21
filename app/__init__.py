@@ -15,20 +15,19 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
     
-    from .api.users import users_api
-    from .api.recipes import recipes_api
-    from .api.tags import tags_api
-    from .api.collections import collections_api
+    from .users_endpoints import users
+    from .recipes_endpoints import recipes
+    from .tags_endpoints import tags
+    from .collections_endpoints import collections
     from .auth import auth
     
-    app.register_blueprint(users_api, url_prefix='/api/users')
-    app.register_blueprint(recipes_api, url_prefix='/api/recipes')
-    app.register_blueprint(tags_api, url_prefix='/api/tags')
-    app.register_blueprint(collections_api, url_prefix='/api/collections')
-
-    app.register_blueprint(auth, url_prefix='/')
+    app.register_blueprint(users)
+    app.register_blueprint(recipes)
+    app.register_blueprint(tags)
+    app.register_blueprint(collections)
+    app.register_blueprint(auth)
     
-    from .models import User, Recipe
+    from ..models import User, Recipe
     
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'

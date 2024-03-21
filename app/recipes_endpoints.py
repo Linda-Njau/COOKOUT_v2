@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from app.models import Recipe, Tag
 from app import db
-from app.api.services.recipe_service import RecipeService
+from app.services.recipe_service import RecipeService
 
 recipes = Blueprint('recipes', __name__)
 recipe_service = RecipeService()
@@ -9,8 +9,8 @@ recipe_service = RecipeService()
 @recipes.route('/recipes', methods=['GET'], strict_slashes=False)
 def get_recipes():
     """Retrieves all recipes"""
-    recipes = recipe_service.get_all_recipes()
-    return jsonify(recipes)
+    user_recipes = recipe_service.get_all_recipes()
+    return jsonify(user_recipes)
 
 
 @recipes.route('/recipes', methods=['POST'], strict_slashes=False)
