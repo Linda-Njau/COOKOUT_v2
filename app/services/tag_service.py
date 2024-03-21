@@ -1,4 +1,4 @@
-from app.models import Tag
+from models import Tag
 from app import db
 
 

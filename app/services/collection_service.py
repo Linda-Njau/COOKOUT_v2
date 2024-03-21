@@ -1,4 +1,4 @@
-from app.models import Collection
+from models import Collection
 from app import db
 
 

@@ -27,7 +27,7 @@ def create_app():
     app.register_blueprint(collections)
     app.register_blueprint(auth)
     
-    from ..models import User, Recipe
+    from models import User, Recipe
     
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'

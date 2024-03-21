@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app.models import Recipe, Tag
+from models import Recipe, Tag
 from app import db
 from app.services.recipe_service import RecipeService
 
@@ -28,14 +28,14 @@ def get_recipe(recipe_id):
     return jsonify(recipe)
 
 
-@recipes.route('recipes/<int:recipe_id>', methods=['PUT'], strict_slashes=False)
+@recipes.route('/recipes/<int:recipe_id>', methods=['PUT'], strict_slashes=False)
 def update_recipe(recipe_id):
     data = request.get_json()
     response = recipe_service.update_recipe(recipe_id, data)
     return jsonify(response)
 
 
-@recipes.route('recipes/<int:recipe_id>', methods=['DELETE'], strict_slashes=False)
+@recipes.route('/recipes/<int:recipe_id>', methods=['DELETE'], strict_slashes=False)
 def delete_recipe(recipe_id):
     response = recipe_service.delete_recipe(recipe_id)
     return jsonify(response)

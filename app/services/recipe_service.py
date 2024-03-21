@@ -1,4 +1,4 @@
-from app.models import Recipe, Tag
+from models import Recipe, Tag
 from app import db
 
 
