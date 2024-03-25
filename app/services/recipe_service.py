@@ -3,13 +3,15 @@ from app import db
 
 
 class RecipeService:
-    def get_all_recipes(self):
+    def get_all_recipes(self, tags=None):
         """Retrieves all recipes"""
-        recipes = Recipe.query.all()
-        recipe_data = []
-        for recipe in recipes:
-            recipe_data.append(self._map_recipe_to_dict(recipe))
-        return recipe_data
+        if tags:
+            recipes = Recipe.query.join(Recipe.tags).filter(Tag.name ==tags, Recipe.hidden == False).all()
+        else:
+            recipes = Recipe.query.all()
+        if recipes:
+            serialized_recipes = [recipe.serialize() for recipe in recipes]
+        return serialized_recipes
 
     def create_recipe(self, data):
         """Create a recipe from the specified attributes."""
@@ -22,11 +24,15 @@ class RecipeService:
         servings = data.get('servings')
         hidden = data.get('hidden')
         collection_id = data.get('collection_id')
-        tag_ids = data.get('tag_ids')
+        tags = data.get('tags')
         user_id = data.get('user_id')
 
         if not title:
             return {'error': 'Your recipe needs a title'}, 400
+        
+        if tags:
+            if not isinstance(tags, list):
+                tags = [tags]
         
         with db.session() as session:
             user = session.get(User, user_id)
@@ -45,10 +51,13 @@ class RecipeService:
             hidden=hidden,
             collection_id=collection_id,
             user_id=user_id
+            
         )
-        if tag_ids:
-            tags = Tag.query.filter(Tag.id.in_(tag_ids)).all()
-            new_recipe.tags.extend(tags)
+      
+            
+        existing_tags = Tag.query.filter(Tag.name.in_(tags)).all()
+        new_tags = [Tag(name=tag_name) for tag_name in tags if tag_name not in [tag.name for tag in existing_tags]]
+        new_recipe.tags.extend(existing_tags + new_tags)
 
         db.session.add(new_recipe)
         db.session.commit()

@@ -28,6 +28,8 @@ class Recipe(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     
     def serialize(self):
+        
+        serialized_tags = [tag.name for tag in self.tags]
         return {
             'id': self.id,
             'title': self.title,
@@ -38,7 +40,8 @@ class Recipe(db.Model):
             'calories': self.calories,
             'servings': self.servings,
             'hidden': self.hidden,
-            'collection_id': self.collection_id
+            'tags': serialized_tags,
+            'collection_id': self.collection_id,
         }
 
 class Collection(db.Model):
