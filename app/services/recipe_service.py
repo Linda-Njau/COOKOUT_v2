@@ -6,11 +6,18 @@ class RecipeService:
     def get_all_recipes(self, tags=None):
         """Retrieves all recipes"""
         if tags:
-            recipes = Recipe.query.join(Recipe.tags).filter(Tag.name ==tags, Recipe.hidden == False).all()
+            tag_list = tags.split(',')
+            query = Recipe.query.filter(Recipe.hidden == False)
+        
+            query = query.join(Recipe.tags)
+            
+            query = query.filter(Tag.name.in_(tag_list))
+            
+            recipes = query.all()
         else:
             recipes = Recipe.query.all()
-        if recipes:
-            serialized_recipes = [recipe.serialize() for recipe in recipes]
+        
+        serialized_recipes = [recipe.serialize() for recipe in recipes]
         return serialized_recipes
 
     def create_recipe(self, data):
