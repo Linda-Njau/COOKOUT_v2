@@ -1,4 +1,4 @@
-from models import Recipe, Tag
+from models import Recipe, Tag, User
 from app import db
 
 
@@ -23,9 +23,16 @@ class RecipeService:
         hidden = data.get('hidden')
         collection_id = data.get('collection_id')
         tag_ids = data.get('tag_ids')
+        user_id = data.get('user_id')
 
         if not title:
             return {'error': 'Your recipe needs a title'}, 400
+        
+        with db.session() as session:
+            user = session.get(User, user_id)
+        if not user:
+                return {'error': 'User not found'}
+            
 
         new_recipe = Recipe(
             title=title,
@@ -37,6 +44,7 @@ class RecipeService:
             servings=servings,
             hidden=hidden,
             collection_id=collection_id,
+            user_id=user_id
         )
         if tag_ids:
             tags = Tag.query.filter(Tag.id.in_(tag_ids)).all()
