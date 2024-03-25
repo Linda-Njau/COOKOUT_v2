@@ -26,6 +26,20 @@ class Recipe(db.Model):
     hidden = db.Column(db.Boolean, default=False)
     collection_id = db.Column(db.Integer, db.ForeignKey('collection.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    
+    def serialize(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'ingredients': self.ingredients,
+            'instructions': self.instructions,
+            'preparation_time': self.preparation_time,
+            'cooking_time': self.cooking_time,
+            'calories': self.calories,
+            'servings': self.servings,
+            'hidden': self.hidden,
+            'collection_id': self.collection_id
+        }
 
 class Collection(db.Model):
     """Collection model for grouping recipes"""

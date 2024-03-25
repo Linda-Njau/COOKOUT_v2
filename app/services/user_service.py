@@ -1,4 +1,4 @@
-from models import User
+from models import User, Recipe
 from app import db
 
 
@@ -76,3 +76,14 @@ class UserService:
         db.session.commit()
 
         return {'message': 'User deleted successfully.'}
+    
+    def get_user_recipes(self, user_id):
+        with db.session() as session:
+            user = session.get(User, user_id)
+        if not user:
+            return {'error': 'User not found'}
+        
+        user_recipes = Recipe.query.filter_by(user_id=user_id).all()
+        if user_recipes:
+            serialized_recipes = [recipe.serialize() for recipe in user_recipes]
+            return serialized_recipes
