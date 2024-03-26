@@ -116,8 +116,15 @@ class RecipeService:
         recipe = Recipe.query.get(recipe_id)
         if not recipe:
             return {'error': 'recipe not found'}, 404
+        
+        tags = recipe.tags
 
         db.session.delete(recipe)
+        db.session.commit()
+        
+        for tag in tags:
+            if not tag.recipes:
+                db.session.delete(tag)
         db.session.commit()
 
         return {'message': 'recipe deleted successfully.'}
