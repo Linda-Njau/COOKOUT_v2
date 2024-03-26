@@ -83,34 +83,34 @@ class RecipeService:
         recipe = Recipe.query.get(recipe_id)
         if not recipe:
             return {'error': 'Recipe not found'}, 404
-
-        title = data.get('title')
-        ingredients = data.get('ingredients')
-        instructions = data.get('instructions')
-        preparation_time = data.get('preparation_time')
-        cooking_time = data.get('cooking_time')
-        calories = data.get('calories')
-        servings = data.get('servings')
-        hidden = data.get('hidden')
-        collection_id = data.get('collection_id')
-        tag_ids = data.get('tag_ids')
-
-        recipe.title = title
-        recipe.ingredients = ingredients
-        recipe.instructions = instructions
-        recipe.preparation_time = preparation_time
-        recipe.cooking_time = cooking_time
-        recipe.calories = calories
-        recipe.servings = servings
-        recipe.hidden = hidden
-        recipe.collection_id = collection_id
-
-        if tag_ids:
-            tags = Tag.query.filter(Tag.id.in_(tag_ids)).all()
-            recipe.tags = tags
+        allowed_attributes = [
+            'title', 'ingredients', 'instructions', 'preparation_time',
+            'cooking_time', 'calories', 'servings', 'hidden', 'collection_id', 'tags'
+        ]
+        
+        for attr, value in data.items():
+            if attr in allowed_attributes:
+                if attr == 'tags':
+                    recipe.tags = self._handle_tags(value)
+                else:
+                    setattr(recipe, attr, value)
 
         db.session.commit()
-        return {'message': 'Recipe updated successfully'}
+        print("Recipe type:", type(recipe))
+        print("Recipe details:", recipe)
+        return recipe.serialize(), 200
+    
+    def _handle_tags(self, tag_names):
+        tags = []
+        if isinstance(tag_names, str):
+            tag_names = [tag_names]
+        for tag_name in tag_names:
+            tag = Tag.query.filter_by(name=tag_name).first()
+            if not tag:
+                tag = Tag(name=tag_name)
+                db.session.add(tag)
+            tags.append(tag)
+        return tags
 
     def delete_recipe(self, recipe_id):
         recipe = Recipe.query.get(recipe_id)
