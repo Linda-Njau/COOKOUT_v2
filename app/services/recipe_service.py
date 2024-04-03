@@ -31,7 +31,7 @@ class RecipeService:
         servings = data.get('servings')
         hidden = data.get('hidden')
         collection_id = data.get('collection_id')
-        tags = data.get('tags')
+        tags = data.get('tags', [])
         user_id = data.get('user_id')
 
         if not title:
@@ -60,11 +60,10 @@ class RecipeService:
             user_id=user_id
             
         )
-      
-            
-        existing_tags = Tag.query.filter(Tag.name.in_(tags)).all()
-        new_tags = [Tag(name=tag_name) for tag_name in tags if tag_name not in [tag.name for tag in existing_tags]]
-        new_recipe.tags.extend(existing_tags + new_tags)
+        if tags:  
+            existing_tags = Tag.query.filter(Tag.name.in_(tags)).all()
+            new_tags = [Tag(name=tag_name) for tag_name in tags if tag_name not in [tag.name for tag in existing_tags]]
+            new_recipe.tags.extend(existing_tags + new_tags)
 
         db.session.add(new_recipe)
         db.session.commit()
