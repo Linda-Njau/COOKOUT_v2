@@ -1,3 +1,4 @@
+from werkzeug.security import generate_password_hash
 from models import User, Recipe
 from app import db
 
@@ -21,6 +22,7 @@ class UserService:
         email = data.get('email')
         password = data.get('password')
         username = data.get('username')
+        password_hash = generate_password_hash(password)
 
         if not email or not password or not username:
             return {'error': 'missing required fields'}, 400
@@ -28,7 +30,7 @@ class UserService:
         new_user = User(
             email=email,
             username=username,
-            password=password
+            password_hash=password_hash
         )
 
         db.session.add(new_user)
