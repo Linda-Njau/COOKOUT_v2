@@ -33,7 +33,7 @@ class RecipeService:
         collection_id = data.get('collection_id')
         tags = data.get('tags', [])
         user_id = data.get('user_id')
-
+        
         if not title:
             return {'error': 'Your recipe needs a title'}, 400
         

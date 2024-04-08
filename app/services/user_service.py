@@ -80,6 +80,8 @@ class UserService:
         return {'message': 'User deleted successfully.'}
     
     def get_user_recipes(self, user_id):
+        if not user_id:
+            return {'error': 'User not found'}
         with db.session() as session:
             user = session.get(User, user_id)
         if not user:
@@ -89,3 +91,4 @@ class UserService:
         if user_recipes:
             serialized_recipes = [recipe.serialize() for recipe in user_recipes]
             return serialized_recipes
+        return None
