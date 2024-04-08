@@ -13,7 +13,7 @@ def login():
        return jsonify({"msg": "Bad request, missing parameters"}), 400
    user = User.query.filter_by(username=username).first()
    
-   if user in None or not user.check_password(password):
+   if user is None or not user.check_password(password):
        return jsonify({"msg": "Bad username or password"}), 401
    
    access_token = create_access_token(identity=username)

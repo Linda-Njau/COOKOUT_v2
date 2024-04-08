@@ -1,6 +1,7 @@
 from app import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
+from werkzeug.security import generate_password_hash, check_password_hash
 
 followers = db.Table('followers',
                      db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
@@ -72,6 +73,12 @@ class User(db.Model, UserMixin):
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
+    
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+    
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 def follow(self, user):
     """Follow function for User object"""
