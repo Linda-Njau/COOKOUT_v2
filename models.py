@@ -1,7 +1,7 @@
-from app import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
+from app import db
 
 followers = db.Table('followers',
                      db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
@@ -61,9 +61,9 @@ class Tag(db.Model):
 class User(db.Model, UserMixin):
     """User object for cookout"""
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(150), unique=True)
-    password = db.Column(db.String(150))
-    username = db.Column(db.String(150))
+    email = db.Column(db.String(64), unique=True)
+    password_hash = db.Column(db.String(64))
+    username = db.Column(db.String(128), nullable=False)
     recipes = db.relationship('Recipe')
     
     """ defining the following and followed self-referencial relationship between User objects """
