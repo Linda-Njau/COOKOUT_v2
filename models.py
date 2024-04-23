@@ -100,5 +100,5 @@ def followed_recipe(self):
     followed = Recipe.query.join(
         followers, (followers.c.followed_id == Recipe.user_id)).filter(
             followers.c.follower_id == self.id)
-    own = Recipe.query.filter_by(user_id==self.id)
+    own = Recipe.query.filter_by(user_id=self.id)
     return followed.union(own).order_by(Recipe.date.desc())
