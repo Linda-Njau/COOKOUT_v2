@@ -102,3 +102,9 @@ class User(db.Model, UserMixin):
                 followers.c.follower_id == self.id)
         own = Recipe.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Recipe.date.desc())
+    
+    def count_followers(self):
+        return self.followers.count()
+    
+    def count_followed(self):
+        return self.followed.count()
