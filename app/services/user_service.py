@@ -131,8 +131,10 @@ class UserService:
                 return {'error': 'Invalid followed'}
                 
             follower.unfollow(followed)
+            
+            new_followed_count = follower.count_followed()
         db.session.commit()
-        return {'success': 'You have unfollowed this user'}
+        return {'success': 'You have unfollowed this user'}, new_followed_count
     
     
     
