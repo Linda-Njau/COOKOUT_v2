@@ -92,3 +92,37 @@ class UserService:
             serialized_recipes = [recipe.serialize() for recipe in user_recipes]
             return serialized_recipes
         return None
+
+    def follow_user(self, data):
+        follower_id = data.get('follower_id')
+        followed_id = data.get('followed_id')
+        
+        with db.session() as session:
+            follower = session.get(User, follower_id)
+            followed = session.get(User, followed_id)
+        
+        if not follower or followed:
+            return {'error': 'Invalid User'}
+        
+        follower.follow(followed)
+        db.session.commit()
+        return {'message': 'You are now following this user'}
+    
+    
+    def unfollow_user(self, data):
+        follower_id = data.get('follower_id')
+        followed_id = data.get('followed_id')
+        
+        with db.session() as session:
+            follower = session.get(User, follower_id)
+            followed = session.get(User, followed_id)
+            
+        if not follower or followed:
+            return {'error': 'Invalid User'}
+        
+        follower.unfollow(followed)
+        db.session.commit()
+        return {'success': 'You have unfollowed this user'}
+    
+    
+    
