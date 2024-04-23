@@ -101,10 +101,13 @@ class UserService:
             follower = session.get(User, follower_id)
             followed = session.get(User, followed_id)
         
-        if not follower or followed:
-            return {'error': 'Invalid User'}
-        
-        follower.follow(followed)
+            if not follower: 
+                return {'error': 'Invalid follower'}
+            
+            if not followed: 
+                return {'error': 'Invalid followed'}
+            
+            follower.follow(followed)
         db.session.commit()
         return {'message': 'You are now following this user'}
     
@@ -117,10 +120,13 @@ class UserService:
             follower = session.get(User, follower_id)
             followed = session.get(User, followed_id)
             
-        if not follower or followed:
-            return {'error': 'Invalid User'}
-        
-        follower.unfollow(followed)
+            if not follower:
+                return {'error': 'Invalid follower'}
+            
+            if not followed:
+                return {'error': 'Invalid followed'}
+                
+            follower.unfollow(followed)
         db.session.commit()
         return {'success': 'You have unfollowed this user'}
     

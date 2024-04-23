@@ -80,25 +80,25 @@ class User(db.Model, UserMixin):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-def follow(self, user):
-    """Follow function for User object"""
-    if not self.is_following(user):
-        self.followed.append(user)
-        
-def unfollow(self, user):
-    """Unfollow function for User object"""
-    if self.is_following(user):
-        self.followed.remove(user)
-        
-def is_following(self, user):
-    """Check if User object is following a user"""
-    return self.followed.filter(
-        followers.c.followed_id == user.id).count() > 0
+    def follow(self, user):
+        """Follow function for User object"""
+        if not self.is_following(user):
+            self.followed.append(user)
+            
+    def unfollow(self, user):
+        """Unfollow function for User object"""
+        if self.is_following(user):
+            self.followed.remove(user)
+            
+    def is_following(self, user):
+        """Check if User object is following a user"""
+        return self.followed.filter(
+            followers.c.followed_id == user.id).count() > 0
 
-def followed_recipe(self):
-    """Returns recipe information of followed users or user's own"""
-    followed = Recipe.query.join(
-        followers, (followers.c.followed_id == Recipe.user_id)).filter(
-            followers.c.follower_id == self.id)
-    own = Recipe.query.filter_by(user_id=self.id)
-    return followed.union(own).order_by(Recipe.date.desc())
+    def followed_recipe(self):
+        """Returns recipe information of followed users or user's own"""
+        followed = Recipe.query.join(
+            followers, (followers.c.followed_id == Recipe.user_id)).filter(
+                followers.c.follower_id == self.id)
+        own = Recipe.query.filter_by(user_id=self.id)
+        return followed.union(own).order_by(Recipe.date.desc())
