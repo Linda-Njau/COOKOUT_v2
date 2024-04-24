@@ -46,11 +46,16 @@ def delete_user(user_id):
 @users.route('/users/<user_id>/follow', methods=['POST'], strict_slashes=False)
 def follow_user(user_id):
     data = request.get_json()
-    response = user_service.follow_user(data)
+    response = user_service.follow_user(data, user_id)
     return jsonify(response)
 
 @users.route('/users/<user_id>/unfollow', methods=['POST'], strict_slashes=False)
 def unfollow(user_id):
     data = request.get_json()
-    response = user_service.unfollow_user(data)
+    response = user_service.unfollow_user(data, user_id)
     return jsonify(response)
+
+@users.route('/users/<user_id>/followed_recipes', methods=['GET'], strict_slashes=False)
+def get_followed_recipes(user_id):
+    recipes = user_service.get_followed_recipes(user_id)
+    return recipes

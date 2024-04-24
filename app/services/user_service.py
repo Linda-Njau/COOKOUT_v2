@@ -93,12 +93,12 @@ class UserService:
             return serialized_recipes
         return None
 
-    def follow_user(self, data):
-        follower_id = data.get('follower_id')
+    def follow_user(self, data, user_id):
+
         followed_id = data.get('followed_id')
         
         with db.session() as session:
-            follower = session.get(User, follower_id)
+            follower = session.get(User, user_id)
             followed = session.get(User, followed_id)
         
             if not follower: 
@@ -110,18 +110,20 @@ class UserService:
             follower.follow(followed)
             
             new_followed_count = follower.count_followed()
-        db.session.commit()
+            all_followed = follower.all_followed()
+            print(all_followed)
+            db.session.commit()
         
         
         return {'message': 'You are now following this user'}, new_followed_count
     
     
-    def unfollow_user(self, data):
-        follower_id = data.get('follower_id')
+    def unfollow_user(self, data, user_id):
+
         followed_id = data.get('followed_id')
         
         with db.session() as session:
-            follower = session.get(User, follower_id)
+            follower = session.get(User, user_id)
             followed = session.get(User, followed_id)
             
             if not follower:
@@ -137,4 +139,13 @@ class UserService:
         return {'success': 'You have unfollowed this user'}, new_followed_count
     
     
-    
+    def get_followed_recipes(self, user_id):
+        with db.session() as session:
+            user = session.get(User, user_id)
+            if not user:
+                return {'error': 'User not found'}
+            recipes = user.followed_recipes()
+            if recipes:
+                serialized_recipes = [recipe.serialize() for recipe in recipes]
+                return serialized_recipes
+        return None

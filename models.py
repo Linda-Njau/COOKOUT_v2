@@ -42,7 +42,10 @@ class Recipe(db.Model):
             'servings': self.servings,
             'hidden': self.hidden,
             'tags': serialized_tags,
+            'date': self.date,
+            'user_id': self.user_id,
             'collection_id': self.collection_id,
+        
         }
 
 class Collection(db.Model):
@@ -83,6 +86,7 @@ class User(db.Model, UserMixin):
     def follow(self, user):
         """Follow function for User object"""
         if not self.is_following(user):
+            print(user.id)
             self.followed.append(user)
             
     def unfollow(self, user):
@@ -95,16 +99,19 @@ class User(db.Model, UserMixin):
         return self.followed.filter(
             followers.c.followed_id == user.id).count() > 0
 
-    def followed_recipe(self):
+    def followed_recipes(self):
         """Returns recipe information of followed users or user's own"""
         followed = Recipe.query.join(
             followers, (followers.c.followed_id == Recipe.user_id)).filter(
                 followers.c.follower_id == self.id)
         own = Recipe.query.filter_by(user_id=self.id)
-        return followed.union(own).order_by(Recipe.date.desc())
-    
+        return followed.union(own).order_by(Recipe.date.desc()).all()
+            
     def count_followers(self):
         return self.followers.count()
     
     def count_followed(self):
         return self.followed.count()
+    
+    def all_followed(self):
+        return self.followed.all()
