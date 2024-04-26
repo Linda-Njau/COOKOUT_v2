@@ -59,6 +59,11 @@ def unfollow(user_id):
     response = user_service.unfollow_user(data, user_id)
     return jsonify(response)
 
+@users.route('/users/<int:user_id>/is_following/<int:target_user_id>', methods=['GET'], strict_slashes=False)
+def is_following(user_id, target_user_id):
+    response = user_service.check_is_following(user_id, target_user_id)
+    return jsonify(response)
+
 @users.route('/users/<user_id>/followed_recipes', methods=['GET'], strict_slashes=False)
 def get_followed_recipes(user_id):
     recipes = user_service.get_followed_recipes(user_id)

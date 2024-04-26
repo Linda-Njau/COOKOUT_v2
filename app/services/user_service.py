@@ -163,3 +163,14 @@ class UserService:
                 serialized_recipes = [recipe.serialize() for recipe in recipes]
                 return serialized_recipes
         return None
+
+    def check_is_following(self, user_id, target_user_id):
+        with db.session() as session:
+            user = session.get(User, user_id)
+            target_user = session.get(User, target_user_id)
+            if not user:
+                return {'Error': 'User not found'}
+            if not target_user:
+                return {'Error': 'Target user not found'}
+            is_following = user.is_following(target_user)
+        return is_following
