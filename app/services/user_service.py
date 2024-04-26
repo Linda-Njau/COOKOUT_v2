@@ -49,6 +49,20 @@ class UserService:
             'username': user.username
         }
         return user_data
+    
+    def get_user_by_username(self, username):
+        user = User.query.filter_by(username=username).first()
+        print(user)
+        if not user:
+            return{'error': 'User not found'}, 404
+        
+        user_data = {
+            'id': user.id,
+            'username': user.username,
+            'email': user.email
+        }
+        return user_data
+
 
     def update_user(self, user_id, data):
         """update user information"""

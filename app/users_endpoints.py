@@ -30,6 +30,10 @@ def get_user(user_id):
     user = user_service.get_user(user_id)
     return jsonify(user), 200
 
+@users.route('/users/<string:username>', methods=['GET'], strict_slashes=False)
+def get_user_by_username(username):
+    user = user_service.get_user_by_username(username)
+    return jsonify(user), 200
 
 @users.route('/users/<int:user_id>', methods=['PUT'], strict_slashes=False)
 def update_user(user_id):
