@@ -54,6 +54,12 @@ class Recipe(db.Model):
         recipes = query.all()
         serialized_recipes = [recipe.serialize() for recipe in recipes]
         return serialized_recipes
+    
+    @classmethod
+    def get_recipes_by_date(cls):
+        query = cls.query.filter(cls.hidden == False).order_by(cls.date.desc()).all()
+        serialized_recipes = [recipe.serialize() for recipe in query]
+        return serialized_recipes
 
 class Collection(db.Model):
     """Collection model for grouping recipes"""

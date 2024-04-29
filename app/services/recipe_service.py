@@ -7,10 +7,10 @@ class RecipeService:
         """Retrieves all recipes"""
         if tags:
             tag_list = tags.split(',')
-            recipes = Recipe.get_recipes_by_tags(tag_list)        
+            recipes = Recipe.get_recipes_by_tags(tag_list)    
             
         else:
-            recipes = Recipe.query.all()
+            recipes = Recipe.get_recipes_by_date()
             
         return recipes
 
