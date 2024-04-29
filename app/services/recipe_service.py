@@ -7,18 +7,12 @@ class RecipeService:
         """Retrieves all recipes"""
         if tags:
             tag_list = tags.split(',')
-            query = Recipe.query.filter(Recipe.hidden == False)
-        
-            query = query.join(Recipe.tags)
+            recipes = Recipe.get_recipes_by_tags(tag_list)        
             
-            query = query.filter(Tag.name.in_(tag_list))
-            
-            recipes = query.all()
         else:
             recipes = Recipe.query.all()
-        
-        serialized_recipes = [recipe.serialize() for recipe in recipes]
-        return serialized_recipes
+            
+        return recipes
 
     def create_recipe(self, data):
         """Create a recipe from the specified attributes."""

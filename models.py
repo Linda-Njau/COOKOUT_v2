@@ -47,6 +47,13 @@ class Recipe(db.Model):
             'collection_id': self.collection_id,
         
         }
+        
+    @classmethod
+    def get_recipes_by_tags(cls, tags):
+        query = cls.query.filter(cls.hidden == False).join(cls.tags).filter(Tag.name.in_(tags))
+        recipes = query.all()
+        serialized_recipes = [recipe.serialize() for recipe in recipes]
+        return serialized_recipes
 
 class Collection(db.Model):
     """Collection model for grouping recipes"""
