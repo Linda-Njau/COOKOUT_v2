@@ -1,5 +1,6 @@
 from werkzeug.security import generate_password_hash
 import re
+from flask_api import status
 from models import User, Recipe
 from app import db
 
@@ -85,6 +86,10 @@ class UserService:
     
     def create_user(self, data):
         """Create a new user"""
+        is_valid, errors = self.is_valid_user(data, context="create")
+        
+        if not is_valid:
+            return get_error_message(errors, status.HTTP_400_BAD_REQUEST)
         email = data.get('email')
         password = data.get('password')
         username = data.get('username')
@@ -102,8 +107,9 @@ class UserService:
         db.session.add(new_user)
         db.session.commit()
 
-        return {'message': 'Welcome to Cookout', 'user_id': new_user.id}, 201
-
+        if new_user.user_id:
+            return {'user_id': new_user.user_id}, status.HTTP_201_CREATED
+        
     def get_user(self, user_id):
         user = User.query.get(user_id)
         if not user:

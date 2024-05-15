@@ -21,8 +21,8 @@ def get_user_recipes(user_id):
 def create_user():
     """Create a new user"""
     data = request.get_json()
-    response = user_service.create_user(data)
-    return jsonify(response), response[1]
+    response, status_code = user_service.create_user(data)
+    return jsonify(response), status_code
 
 
 @users.route('/users/<int:user_id>', methods=['GET'], strict_slashes=False)

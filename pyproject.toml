@@ -13,6 +13,7 @@ flask-login = "^0.6.3"
 flask-migrate = "^4.0.7"
 flask-cors = "^4.0.0"
 flask-jwt-extended = "^4.6.0"
+flask-api = "^3.1"
 
 
 [build-system]
