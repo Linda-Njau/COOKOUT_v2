@@ -36,7 +36,7 @@ class UserService:
         """
         error_messages = []
         if context == 'create':
-            if 'email' not in data:
+            if not data.get('email'):
                 error_messages.append("Please provide a valid email address")
             else:
                 if not self.is_valid_format(data['email']):
@@ -44,12 +44,12 @@ class UserService:
                 if self.is_email_taken(data['email']):
                     error_messages.append("Email address already in use")
             
-            if 'password' not in data:
+            if  not data.get('password'):
                 error_messages.append("please provide a password")
             elif len(data['password']) < 8:
                 error_messages.append("Password must be at least 8 characters")
             
-            if 'username' not in data:
+            if not data.get('username'):
                 error_messages.append("Please provide a username")
             else:
                 if self.is_username_taken(data['username']):
@@ -107,8 +107,8 @@ class UserService:
         db.session.add(new_user)
         db.session.commit()
 
-        if new_user.user_id:
-            return {'user_id': new_user.user_id}, status.HTTP_201_CREATED
+        if new_user.id:
+            return {'user_id': new_user.id}, status.HTTP_201_CREATED
         
     def get_user(self, user_id):
         user = User.query.get(user_id)
