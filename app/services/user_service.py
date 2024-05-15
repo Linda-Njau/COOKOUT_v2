@@ -1,10 +1,77 @@
 from werkzeug.security import generate_password_hash
+import re
 from models import User, Recipe
 from app import db
 
 
-class UserService:
+def get_error_message(errors, status_code):
+    """
+    Create a standardized error response.
     
+    Args:
+        errors (str or list): A single error message or a list of error messages.
+        status_code (int): The HTTP status code associated with the error.
+
+    Returns:
+        dict: A dictionary containing the error message(s) and the corresponding status code.
+    """
+    if isinstance(errors, list):
+        error_message = '; '.join(errors)
+    else:
+        error_message = errors
+    return{'error': error_message}, status_code
+        
+class UserService:
+    def is_valid_user(self, data, context):
+        """
+        Validates user data based on the specified context ('create' or 'update').
+
+        Args:
+            data (dict): The data dictionary containing user information.
+            context (str): The context in which the validation is being performed ('create' or 'update').
+
+        Returns:
+            tuple: A tuple containing a boolean indicating validity and a list of error messages, if any.
+        """
+        error_messages = []
+        if context == 'create':
+            if 'email' not in data:
+                error_messages.append("Please provide a valid email address")
+            else:
+                if not self.is_valid_format(data['email']):
+                    error_messages.append("Invalid email format")
+                if self.is_email_taken(data['email']):
+                    error_messages.append("Email address already in use")
+            
+            if 'password' not in data:
+                error_messages.append("please provide a password")
+            elif len(data['password']) < 8:
+                error_messages.append("Password must be at least 8 characters")
+            
+            if 'username' not in data:
+                error_messages.append("Please provide a username")
+            else:
+                if self.is_username_taken(data['username']):
+                    error_messages.append("Username already in use")
+        
+        if error_messages:
+            return False, error_messages
+        return True, None
+    
+    def is_username_taken(self, username):
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            return existing_user is not None
+    
+    def is_valid_format(self, email):
+        email_regex = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
+        return re.match(email_regex, email) is not None
+            
+    def is_email_taken(self, email):
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            return existing_user is not None
+        
     def get_users(self):
         users = User.query.all()
         user_list = []
@@ -12,7 +79,6 @@ class UserService:
             user_data = {
                 'id': user.id,
                 'username': user.username,
-                # Include other user attributes as needed
             }
             user_list.append(user_data)
         return user_list
