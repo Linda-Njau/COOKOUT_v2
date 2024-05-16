@@ -10,17 +10,13 @@ def get_error_message(errors, status_code):
     Create a standardized error response.
     
     Args:
-        errors (str or list): A single error message or a list of error messages.
+         errors (dict): A dictionary of error messages.
         status_code (int): The HTTP status code associated with the error.
 
     Returns:
         dict: A dictionary containing the error message(s) and the corresponding status code.
     """
-    if isinstance(errors, list):
-        error_message = '; '.join(errors)
-    else:
-        error_message = errors
-    return{'error': error_message}, status_code
+    return{'errors': errors}, status_code
         
 class UserService:
     def is_valid_user(self, data, context):
@@ -34,26 +30,26 @@ class UserService:
         Returns:
             tuple: A tuple containing a boolean indicating validity and a list of error messages, if any.
         """
-        error_messages = []
+        error_messages = {}
         if context == 'create':
             if not data.get('email'):
-                error_messages.append("Please provide a valid email address")
+                error_messages['emailError'] = "Please provide a valid email address"
             else:
                 if not self.is_valid_format(data['email']):
-                    error_messages.append("Invalid email format")
+                    error_messages["emailError"] = "Invalid email format"
                 if self.is_email_taken(data['email']):
-                    error_messages.append("Email address already in use")
+                    error_messages["emailError"] ="Email address already in use"
             
             if  not data.get('password'):
-                error_messages.append("please provide a password")
+                error_messages["passwordError"] = "please provide a password"
             elif len(data['password']) < 8:
-                error_messages.append("Password must be at least 8 characters")
+                error_messages["passwordError"] = "Password must be at least 8 characters"
             
             if not data.get('username'):
-                error_messages.append("Please provide a username")
+                error_messages['usernameError'] = "Please provide a username"
             else:
                 if self.is_username_taken(data['username']):
-                    error_messages.append("Username already in use")
+                    error_messages['usernameError'] = "Username already in use"
         
         if error_messages:
             return False, error_messages
@@ -94,9 +90,6 @@ class UserService:
         password = data.get('password')
         username = data.get('username')
         password_hash = generate_password_hash(password)
-
-        if not email or not password or not username:
-            return {'error': 'missing required fields'}, 400
 
         new_user = User(
             email=email,
