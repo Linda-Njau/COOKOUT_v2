@@ -106,27 +106,26 @@ class UserService:
     def get_user(self, user_id):
         user = User.query.get(user_id)
         if not user:
-            return {'error': 'User not found.'}, 404
+            return get_error_message({'useError': 'User not found'}, status.HTTP_400_BAD_REQUEST)
 
         user_data = {
             'id': user.id,
             'email': user.email,
             'username': user.username
         }
-        return user_data
+        return user_data, status.HTTP_200_OK
     
     def get_user_by_username(self, username):
         user = User.query.filter_by(username=username).first()
-        print(user)
         if not user:
-            return{'error': 'User not found'}, 404
+            return get_error_message({'userError': 'User not found.'}, status.HTTP_400_BAD_REQUEST)
         
         user_data = {
             'id': user.id,
             'username': user.username,
             'email': user.email
         }
-        return user_data
+        return user_data, status.HTTP_200_OK
 
 
     def update_user(self, user_id, data):
