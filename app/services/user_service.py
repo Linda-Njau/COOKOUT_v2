@@ -71,6 +71,8 @@ class UserService:
         
     def get_users(self):
         users = User.query.all()
+        if not users:
+             return get_error_message({'useError': 'User not found'}, status.HTTP_400_BAD_REQUEST)
         user_list = []
         for user in users:
             user_data = {
