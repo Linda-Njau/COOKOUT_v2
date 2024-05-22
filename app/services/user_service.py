@@ -236,8 +236,9 @@ class UserService:
             user = session.get(User, user_id)
             target_user = session.get(User, target_user_id)
             if not user:
-                return {'Error': 'User not found'}
+                return get_error_message({'userError': 'User not found.'}, status.HTTP_400_BAD_REQUEST)
             if not target_user:
-                return {'Error': 'Target user not found'}
+                return get_error_message({'userError': 'Target user not found.'}, status.HTTP_400_BAD_REQUEST)
             is_following = user.is_following(target_user)
-        return is_following
+        
+        return is_following, status.HTTP_200_OK
