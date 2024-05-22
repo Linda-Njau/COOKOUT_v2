@@ -181,20 +181,18 @@ class UserService:
             followed = session.get(User, followed_id)
         
             if not follower: 
-                return {'error': 'Invalid follower'}
-            
+               return get_error_message({'userError': 'User not found.'}, status.HTTP_400_BAD_REQUEST)
+           
             if not followed: 
-                return {'error': 'Invalid followed'}
+                return get_error_message({'userError': 'Target user not found.'}, status.HTTP_400_BAD_REQUEST)
             
             follower.follow(followed)
             
             new_followed_count = follower.count_followed()
-            all_followed = follower.all_followed()
-            print(all_followed)
             db.session.commit()
         
         
-        return {'message': 'You are now following this user'}, new_followed_count
+        return new_followed_count, status.HTTP_200_OK
     
     
     def unfollow_user(self, data, user_id):

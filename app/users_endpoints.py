@@ -49,8 +49,8 @@ def delete_user(user_id):
 @users.route('/users/<user_id>/follow', methods=['POST'], strict_slashes=False)
 def follow_user(user_id):
     data = request.get_json()
-    response = user_service.follow_user(data, user_id)
-    return jsonify(response)
+    response, status_code = user_service.follow_user(data, user_id)
+    return jsonify(response), status_code
 
 @users.route('/users/<user_id>/unfollow', methods=['POST'], strict_slashes=False)
 def unfollow(user_id):
