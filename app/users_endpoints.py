@@ -55,8 +55,8 @@ def follow_user(user_id):
 @users.route('/users/<user_id>/unfollow', methods=['POST'], strict_slashes=False)
 def unfollow(user_id):
     data = request.get_json()
-    response = user_service.unfollow_user(data, user_id)
-    return jsonify(response)
+    response, status_code = user_service.unfollow_user(data, user_id)
+    return jsonify(response), status_code
 
 @users.route('/users/<int:user_id>/is_following/<int:target_user_id>', methods=['GET'], strict_slashes=False)
 def is_following(user_id, target_user_id):
