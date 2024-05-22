@@ -8,14 +8,13 @@ user_service = UserService()
 
 @users.route('/users', methods=['GET'])
 def get_users():
-    users = user_service.get_users()
-    return jsonify(users), 200
+    all_users = user_service.get_users()
+    return jsonify(all_users), 200
 
 @users.route('/users/<int:user_id>/recipes', methods=['GET'])
 def get_user_recipes(user_id):
-    user_recipes = user_service.get_user_recipes(user_id)
-    if user_recipes:
-        return jsonify(user_recipes), 200
+    user_recipes, status_code = user_service.get_user_recipes(user_id)
+    return jsonify(user_recipes), status_code
 
 @users.route('/users', methods=['POST'], strict_slashes=False)
 def create_user():

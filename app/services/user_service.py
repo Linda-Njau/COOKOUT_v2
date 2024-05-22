@@ -158,18 +158,18 @@ class UserService:
         return {'message': 'User deleted successfully.'}
     
     def get_user_recipes(self, user_id):
-        if not user_id:
-            return {'error': 'User not found'}
         with db.session() as session:
             user = session.get(User, user_id)
         if not user:
-            return {'error': 'User not found'}
+            return get_error_message({'userError': 'User not found.'}, status.HTTP_400_BAD_REQUEST)
         
         user_recipes = Recipe.query.filter_by(user_id=user_id).all()
-        if user_recipes:
-            serialized_recipes = [recipe.serialize() for recipe in user_recipes]
-            return serialized_recipes
-        return None
+        
+        if not user_recipes:
+            return get_error_message({'recipesError': 'No recipes found for this user.'}, status.HTTP_404_NOT_FOUND)
+      
+        serialized_recipes = [recipe.serialize() for recipe in user_recipes]
+        return serialized_recipes
 
     def follow_user(self, data, user_id):
 
