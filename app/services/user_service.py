@@ -150,12 +150,11 @@ class UserService:
         """Deletes a user by their user id"""
         user = User.query.get(user_id)
         if not user:
-            return {'error': 'User not found.'}, 404
+            return get_error_message({'userError': 'User not found.'}, status.HTTP_400_BAD_REQUEST)
 
         db.session.delete(user)
         db.session.commit()
-
-        return {'message': 'User deleted successfully.'}
+        return {'message': 'user deleted succesffuly'}, status.HTTP_200_OK
     
     def get_user_recipes(self, user_id):
 

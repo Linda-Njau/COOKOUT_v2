@@ -43,8 +43,8 @@ def update_user(user_id):
 
 @users.route('/users/<int:user_id>', methods=['DELETE'], strict_slashes=False)
 def delete_user(user_id):
-    response = user_service.delete_user(user_id)
-    return jsonify(response), 200
+    response, status_code = user_service.delete_user(user_id)
+    return jsonify(response), status_code
 
 @users.route('/users/<user_id>/follow', methods=['POST'], strict_slashes=False)
 def follow_user(user_id):
