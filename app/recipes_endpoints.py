@@ -25,8 +25,8 @@ def create_recipe():
 @recipes.route('/recipes/<int:recipe_id>', methods=['GET'], strict_slashes=False)
 def get_recipe(recipe_id):
     """Gets a recipe by its id."""
-    recipe = recipe_service.get_recipe(recipe_id)
-    return jsonify(recipe)
+    recipe, status_code = recipe_service.get_recipe(recipe_id)
+    return jsonify(recipe), status_code
 
 
 @recipes.route('/recipes/<int:recipe_id>', methods=['PUT'], strict_slashes=False)

@@ -86,9 +86,10 @@ class RecipeService:
         """Gets a recipe by its id."""
         recipe = Recipe.query.get(recipe_id)
         if not recipe:
-            return {'error': 'recipe not found'}, 404
+            return get_error_message({'recipeError': 'No recipe found'}, status.HTTP_404_NOT_FOUND)
+        
         recipe_data = self._map_recipe_to_dict(recipe)
-        return recipe_data
+        return recipe_data, status.HTTP_200_OK
 
     def update_recipe(self, recipe_id, data):
         recipe = Recipe.query.get(recipe_id)
