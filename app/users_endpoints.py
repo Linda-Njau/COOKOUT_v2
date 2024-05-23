@@ -37,8 +37,8 @@ def get_user_by_username(username):
 @users.route('/users/<int:user_id>', methods=['PUT'], strict_slashes=False)
 def update_user(user_id):
     data = request.get_json()
-    response = user_service.update_user(user_id, data)
-    return jsonify(response), 200
+    response, status_code = user_service.update_user(user_id, data)
+    return jsonify(response), status_code
 
 
 @users.route('/users/<int:user_id>', methods=['DELETE'], strict_slashes=False)

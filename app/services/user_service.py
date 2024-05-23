@@ -50,7 +50,21 @@ class UserService:
             else:
                 if self.is_username_taken(data['username']):
                     error_messages['usernameError'] = "Username already in use"
+        if context == 'update':
+            if 'email' in data:
+                if not self.is_valid_format(data['email']):
+                    error_messages["emailError"] = "Invalid email format"
+                if self.is_email_taken(data['email']):
+                    error_messages["emailError"] ="Email address already in use"
         
+            if 'password' in data:
+                if len(data['password']) < 8:
+                    error_messages["passwordError"] = "Password must be at least 8 characters"
+                
+            if 'username' in data:
+                if self.is_username_taken(data['username']):
+                    error_messages['usernameError'] = "Username already in use"
+                
         if error_messages:
             return False, error_messages
         return True, None
@@ -134,8 +148,13 @@ class UserService:
         """update user information"""
         user = User.query.get(user_id)
         if not user:
-            return {"error": 'User not found'}, 404
-
+            return get_error_message({'useError': 'User not found'}, status.HTTP_400_BAD_REQUEST)
+        
+        is_valid, errors = self.is_valid_user(data, context="update")
+        
+        if not is_valid:
+            return get_error_message(errors, status.HTTP_400_BAD_REQUEST)
+        
         email = data.get('email')
         password = data.get('password')
         username = data.get('username')
@@ -146,7 +165,7 @@ class UserService:
 
         db.session.commit()
 
-        return {'message': 'User updated successfully.'}
+        return {'message': 'User updated successfully.'}, status.HTTP_200_OK
 
     def delete_user(self, user_id):
         """Deletes a user by their user id"""
