@@ -18,8 +18,8 @@ def get_recipes():
 def create_recipe():
     """Create a recipe from the specified attributes."""
     data = request.get_json()
-    response = recipe_service.create_recipe(data)
-    return jsonify(response)
+    response, status_code = recipe_service.create_recipe(data)
+    return jsonify(response), status_code
 
 
 @recipes.route('/recipes/<int:recipe_id>', methods=['GET'], strict_slashes=False)

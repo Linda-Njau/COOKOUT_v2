@@ -44,7 +44,10 @@ class RecipeService:
         user_id = data.get('user_id')
         
         if not title:
-            return {'error': 'Your recipe needs a title'}, 400
+            return get_error_message({'recipeError': 'No title provided'}, status.HTTP_400)
+        
+        if not user_id:
+            return get_error_message({'userError': 'No user ID provided'}, status.HTTP_400_BAD_REQUEST)
         
         if tags:
             if not isinstance(tags, list):
@@ -53,7 +56,7 @@ class RecipeService:
         with db.session() as session:
             user = session.get(User, user_id)
         if not user:
-                return {'error': 'User not found'}
+            return get_error_message({'userError': 'No user found'}, status.HTTP_404_NOT_FOUND)
             
 
         new_recipe = Recipe(
@@ -77,7 +80,7 @@ class RecipeService:
         db.session.add(new_recipe)
         db.session.commit()
 
-        return {'message': 'Your recipe has been created!', 'recipe_id': new_recipe.id}, 201
+        return new_recipe.id, status.HTTP_201_CREATED
 
     def get_recipe(self, recipe_id):
         """Gets a recipe by its id."""
