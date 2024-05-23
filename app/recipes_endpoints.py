@@ -32,11 +32,11 @@ def get_recipe(recipe_id):
 @recipes.route('/recipes/<int:recipe_id>', methods=['PUT'], strict_slashes=False)
 def update_recipe(recipe_id):
     data = request.get_json()
-    response = recipe_service.update_recipe(recipe_id, data)
-    return jsonify(response)
+    response, status_code = recipe_service.update_recipe(recipe_id, data)
+    return jsonify(response), status_code
 
 
 @recipes.route('/recipes/<int:recipe_id>', methods=['DELETE'], strict_slashes=False)
 def delete_recipe(recipe_id):
-    response = recipe_service.delete_recipe(recipe_id)
-    return jsonify(response)
+    response, status_code = recipe_service.delete_recipe(recipe_id)
+    return jsonify(response), status_code

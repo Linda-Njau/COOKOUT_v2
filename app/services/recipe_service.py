@@ -27,7 +27,7 @@ class RecipeService:
         if not recipes:
             return get_error_message({'recipeError': 'No recipes found'}, status.HTTP_404_NOT_FOUND)
             
-        return recipes
+        return recipes, status.HTTP_200_OK
 
     def create_recipe(self, data):
         """Create a recipe from the specified attributes."""
@@ -94,12 +94,11 @@ class RecipeService:
     def update_recipe(self, recipe_id, data):
         recipe = Recipe.query.get(recipe_id)
         if not recipe:
-            return {'error': 'Recipe not found'}, 404
+            return get_error_message({'recipeError': 'No recipe found'}, status.HTTP_404_NOT_FOUND)
         allowed_attributes = [
             'title', 'ingredients', 'instructions', 'preparation_time',
             'cooking_time', 'calories', 'servings', 'hidden', 'collection_id', 'tags'
         ]
-        
         for attr, value in data.items():
             if attr in allowed_attributes:
                 if attr == 'tags':
@@ -108,9 +107,7 @@ class RecipeService:
                     setattr(recipe, attr, value)
 
         db.session.commit()
-        print("Recipe type:", type(recipe))
-        print("Recipe details:", recipe)
-        return recipe.serialize(), 200
+        return recipe.serialize(), status.HTTP_200_OK
     
     def _handle_tags(self, tag_names):
         tags = []
@@ -127,7 +124,7 @@ class RecipeService:
     def delete_recipe(self, recipe_id):
         recipe = Recipe.query.get(recipe_id)
         if not recipe:
-            return {'error': 'recipe not found'}, 404
+            return get_error_message({'recipeError': 'No recipe found'}, status.HTTP_404_NOT_FOUND)
         
         tags = recipe.tags
 
@@ -139,7 +136,7 @@ class RecipeService:
                 db.session.delete(tag)
         db.session.commit()
 
-        return {'message': 'recipe deleted successfully.'}
+        return {'message': 'recipe deleted successfully.'}, status.HTTP_200_OK
 
     def _map_recipe_to_dict(self, recipe):
         return {
