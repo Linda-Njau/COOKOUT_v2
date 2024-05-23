@@ -10,8 +10,8 @@ recipe_service = RecipeService()
 def get_recipes():
     """Retrieves all recipes"""
     tags = request.args.get('tags')
-    user_recipes = recipe_service.get_all_recipes(tags)
-    return jsonify(user_recipes)
+    user_recipes, status_code = recipe_service.get_all_recipes(tags)
+    return jsonify(user_recipes), status_code
 
 
 @recipes.route('/recipes', methods=['POST'], strict_slashes=False)

@@ -1,7 +1,19 @@
+from flask_api import status
 from models import Recipe, Tag, User
 from app import db
 
+def get_error_message(errors, status_code):
+    """
+    Create a standardized error response.
+    
+    Args:
+         errors (dict): A dictionary of error messages.
+        status_code (int): The HTTP status code associated with the error.
 
+    Returns:
+        dict: A dictionary containing the error message(s) and the corresponding status code.
+    """
+    return{'errors': errors}, status_code
 class RecipeService:
     def get_all_recipes(self, tags=None):
         """Retrieves all recipes"""
@@ -11,6 +23,9 @@ class RecipeService:
             
         else:
             recipes = Recipe.get_recipes_by_date()
+        
+        if not recipes:
+            return get_error_message({'recipeError': 'No recipes found'}, status.HTTP_404_NOT_FOUND)
             
         return recipes
 
