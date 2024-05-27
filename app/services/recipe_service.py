@@ -44,7 +44,7 @@ class RecipeService:
         user_id = data.get('user_id')
         
         if not title:
-            return get_error_message({'recipeError': 'No title provided'}, status.HTTP_400)
+            return get_error_message({'recipeError': 'No title provided'}, status.HTTP_400_BAD_REQUEST)
         
         if not user_id:
             return get_error_message({'userError': 'No user ID provided'}, status.HTTP_400_BAD_REQUEST)

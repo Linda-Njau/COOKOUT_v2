@@ -14,7 +14,7 @@ def get_users():
 @users.route('/users/<int:user_id>/recipes', methods=['GET'])
 def get_user_recipes(user_id):
     user_recipes, status_code = user_service.get_user_recipes(user_id)
-    return jsonify(user_recipes), status_code
+    return user_recipes, status_code
 
 @users.route('/users', methods=['POST'], strict_slashes=False)
 def create_user():

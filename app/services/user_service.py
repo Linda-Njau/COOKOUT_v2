@@ -112,12 +112,13 @@ class UserService:
             username=username,
             password_hash=password_hash
         )
-
+    
         db.session.add(new_user)
         db.session.commit()
-
+        
         if new_user.id:
             return {'user_id': new_user.id}, status.HTTP_201_CREATED
+        
         
     def get_user(self, user_id):
         user = User.query.get(user_id)
@@ -190,7 +191,7 @@ class UserService:
             return get_error_message({'recipesError': 'No recipes found for this user.'}, status.HTTP_404_NOT_FOUND)
       
         serialized_recipes = [recipe.serialize() for recipe in user_recipes]
-        return serialized_recipes
+        return serialized_recipes, status.HTTP_200_OK
 
     def follow_user(self, data, user_id):
 
