@@ -65,5 +65,5 @@ def is_following(user_id, target_user_id):
 
 @users.route('/users/<user_id>/followed_recipes', methods=['GET'], strict_slashes=False)
 def get_followed_recipes(user_id):
-    recipes = user_service.get_followed_recipes(user_id)
-    return recipes
+    recipes, status_code = user_service.get_followed_recipes(user_id)
+    return recipes, status_code

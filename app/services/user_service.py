@@ -246,7 +246,7 @@ class UserService:
                 return get_error_message({'recipesError': 'No recipes found.'}, status.HTTP_404_NOT_FOUND)
             
             serialized_recipes = [recipe.serialize() for recipe in recipes]
-            return serialized_recipes
+            return serialized_recipes, status.HTTP_200_OK
        
 
     def check_is_following(self, user_id, target_user_id):
